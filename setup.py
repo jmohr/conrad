@@ -7,7 +7,7 @@ setup(
     author = 'Justin Mohr',
     author_email = 'jmohr@bytepulse.net',
     packages = find_packages(exclude=['*.test.*', '*.test']),
-    version = conrad.version,
+    version = '.'.join(map(str,conrad.version)),
     install_requires = ['pyodbc', 'jinja2'],
     license = 'BSD',
     url = 'http://github.com/jmohr/conrad',
