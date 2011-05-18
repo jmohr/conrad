@@ -2,7 +2,8 @@
 
 ### An ODBC ORM for Python
 
-Project: conrad
+Project: jmohr/conrad
+
 Copyright: ©2011, Justin Mohr. All rights reserved.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
