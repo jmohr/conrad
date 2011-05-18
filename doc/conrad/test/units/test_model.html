@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_model.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>test_model.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">from</span> <span class="nn">nose.tools</span> <span class="kn">import</span> <span class="n">raises</span>
+
+<span class="kn">from</span> <span class="nn">conrad</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">db</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestModel</span><span class="p">:</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="n">MyModel</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">cache</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Char</span><span class="p">()</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Integer</span><span class="p">()</span>
+            <span class="n">birthdate</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Date</span><span class="p">()</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Text</span><span class="p">()</span>
+            <span class="n">active</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">MyModel</span><span class="o">.</span><span class="n">_fields</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s">&#39;_fields is not a dict&#39;</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">,</span> <span class="s">&#39;birthdate&#39;</span><span class="p">,</span> <span class="s">&#39;address&#39;</span><span class="p">,</span> <span class="s">&#39;active&#39;</span><span class="p">]:</span>
+            <span class="k">assert</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_fields</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> not in _fields&#39;</span> <span class="o">%</span> <span class="n">field</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">MyModel</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">fields</span><span class="o">.</span><span class="n">Field</span><span class="p">),</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is not Field&#39;</span> <span class="o">%</span> <span class="n">field</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">MyModel</span><span class="p">,</span> <span class="s">&#39;Meta&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;pk&#39;</span><span class="p">,</span> <span class="s">&#39;db&#39;</span><span class="p">,</span> <span class="s">&#39;table&#39;</span><span class="p">]:</span>
+            <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="p">,</span> <span class="n">attr</span><span class="p">),</span> <span class="s">&#39;Meta does not have default </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">attr</span>
+            <span class="k">assert</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Meta.</span><span class="si">%s</span><span class="s"> is None&#39;</span> <span class="o">%</span> <span class="n">attr</span>
+        <span class="k">assert</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">pk</span> <span class="o">==</span> <span class="s">&#39;id&#39;</span>
+        <span class="k">assert</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">table</span> <span class="o">==</span> <span class="s">&#39;`mymodel`&#39;</span><span class="p">,</span> <span class="s">&#39;Meta.table </span><span class="si">%s</span><span class="s"> is not `mymodel`&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">db</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">database</span>
+
+    <span class="nd">@raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_meta_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>            <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+                <span class="n">db</span> <span class="o">=</span> <span class="s">&#39;bad&#39;</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_escape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tests</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;StudlyCapsGoHere&#39;</span><span class="p">:</span><span class="s">&#39;`studlycapsgohere`&#39;</span><span class="p">,</span>
+            <span class="s">&#39;camelCaseGoesHere&#39;</span><span class="p">:</span><span class="s">&#39;`camelcasegoeshere`&#39;</span><span class="p">,</span>
+            <span class="s">&#39;some_underscores_perhaps&#39;</span><span class="p">:</span><span class="s">&#39;`some_underscores_perhaps`&#39;</span><span class="p">,</span>
+            <span class="s">&#39;and, punctuation? YEAH!&#39;</span><span class="p">:</span><span class="s">&#39;`and_punctuation_yeah`&#39;</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">orig</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ModelBase</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">escaped</span> <span class="o">==</span> <span class="n">expected</span><span class="p">,</span> <span class="s">&#39;Escape: </span><span class="si">%s</span><span class="s"> is not </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">escaped</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

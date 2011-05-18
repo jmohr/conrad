@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>adapter.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>adapter.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pyodbc</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">abstractproperty</span>
+
+<span class="kn">from</span> <span class="nn">conrad.result</span> <span class="kn">import</span> <span class="n">Result</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>Subclass this to create a Database adapter.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">Adapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        <p><strong>metaclass</strong> = ABCMeta</p>
+<p>placeholder = '?'
+lastrowid_function = 'LAST_ROW_ID()'</p>
+<p>def <strong>init</strong>(self):
+<pre>self.connection = None
+self.cursor = None
+</pre>
+@abstractmethod
+def connect(self, <em>args, </em>*kwargs):
+This method must set self.connection to the DBAPI2 connection,</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span> <span class="n">to</span> <span class="n">a</span> <span class="n">cursor</span> <span class="kn">from</span> <span class="nn">said</span><span class="err"> </span><span class="nn">connection.</span><span class="err"> </span><span class="nn">You</span><span class="err"> </span><span class="nn">MUST</span><span class="err"> </span><span class="nn">define</span>
+        <span class="n">this</span> <span class="n">abstract</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">implementation</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        return</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def execute(self, query):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        inserted row. You may override this property if you need to</span>
+<span class="s">        do something really fancy to get it, or you can just change</span>
+<span class="s">        lastrowid_function in your subclass.&quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">&#39;select {} as lastrowid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lastrowid_function</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        <p>Execute the sql statement, substituting placeholders with</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        <p>the supplied arguments. By default, this method will just call
+execute() on the cursor, using the DBAPI calls. Override it if
+you are creating an adapter for some weird-assed database module
+that doesn't adhere to the DBAPI spec."""
+self.cursor.execute(query.sql, *query.arguments)
+try:
+<pre>return Adapter.rows_to_dicts(self.cursor.fetchall())
+except pyodbc.ProgrammingError, e:
+logger.debug('Could not fetchall on cursor: {}'.format(e))
+return []
+</pre>
+@property
+def lastrowid(self):
+Returns the value of the primary key field of the last</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        <p>This classmethod gets called when substituting table and</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        <p>column names in SQL queries, to escape them for the database. For
+example, in MySQL databases, you can escape names with backticks,
+but some databases barf on this. By default, this method does
+nothing, but override if you want to transform the string."""
+return string</p>
+<p>@staticmethod
+def row_to_dict(row):
+logger.debug('Converting row "{}" to dict.'.format(row))
+colnames = [col[0] for col in row.cursor_description]
+return dict(zip(colnames, row))</p>
+<p>@staticmethod
+def rows_to_dicts(rows):
+return [Adapter.row_to_dict(row) for row in rows]</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
