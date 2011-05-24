@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>table.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>table.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">from</span> <span class="nn">conrad.query</span> <span class="kn">import</span> <span class="n">Select</span>
+<span class="kn">from</span> <span class="nn">conrad.resource</span> <span class="kn">import</span> <span class="n">Resource</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>Represents one table in the database. The Table object exposes methods
+such as filter(), get(), and create() to the user. This is where you will
+handle most of the work of finding and making new resources in the DB.</p>
+<p>Take this example:</p>
+<pre>db = Database('MyDSN')
+artists = db['artist']
+print artists.all()
+[{'id':1, 'name':...}]
+johnny = artists.create(name="Johnny Cash")
+print johnny
+{'id':7, 'name':'Johnny Cash'}
+some_artists = artists.filter(id=gte(4))
+print some_artists
+[{'id':4,...}]
+</pre>
+
+<p>A table will often return Queries, which are made up of many
+lazy-loaded Resources. Some methods -- such as get() -- return a single
+Resource. Think of a Table as a way of finding and managing Resources.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">escaped_table</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rescan</span><span class="p">()</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        <p>Rescans the tables column listing. These values are used for
+validation checking.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">rescan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">)]</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        <p>Filter the contents of the table, and return the results.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="n">q</span> <span class="o">=</span> <span class="n">Select</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">q</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        <p>Gets a specific entry in the table by primary key.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="n">Select</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pk_field</span><span class="p">:</span><span class="n">pk</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        <p>Create a new resource with the values set to **kwargs, but don't
+save the resource.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-12'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-12">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="n">Resource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-13'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-13">#</a>
+        </div>
+        <p>Same as new(), but this will save the resource.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-14'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-14">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-15'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-15">#</a>
+        </div>
+        <p>Returns all resources in the table.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-16'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-16">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="n">Select</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-17'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-17">#</a>
+        </div>
+        <p>The name of the Primary Key column.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">pk_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-18'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-18">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">pk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-19'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-19">#</a>
+        </div>
+        <p>Convenience method to make a new resource for this table. Simply
+calls the new() method.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-20'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-20">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-21'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-21">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">escaped_table</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-22'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-22">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;Table({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">))</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

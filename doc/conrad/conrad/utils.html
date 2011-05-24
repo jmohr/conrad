@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>utils.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>utils.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        <p>Returns the plural version of 'word'.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">def</span> <span class="nf">plural</span><span class="p">(</span><span class="n">word</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="n">aberrant</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;knife&#39;</span>     <span class="p">:</span> <span class="s">&#39;knives&#39;</span><span class="p">,</span>
+            <span class="s">&#39;self&#39;</span>      <span class="p">:</span> <span class="s">&#39;selves&#39;</span><span class="p">,</span>
+            <span class="s">&#39;elf&#39;</span>       <span class="p">:</span> <span class="s">&#39;elves&#39;</span><span class="p">,</span>
+            <span class="s">&#39;life&#39;</span>      <span class="p">:</span> <span class="s">&#39;lives&#39;</span><span class="p">,</span>
+            <span class="s">&#39;hoof&#39;</span>      <span class="p">:</span> <span class="s">&#39;hooves&#39;</span><span class="p">,</span>
+            <span class="s">&#39;leaf&#39;</span>      <span class="p">:</span> <span class="s">&#39;leaves&#39;</span><span class="p">,</span>
+            <span class="s">&#39;echo&#39;</span>      <span class="p">:</span> <span class="s">&#39;echoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;embargo&#39;</span>   <span class="p">:</span> <span class="s">&#39;embargoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;hero&#39;</span>      <span class="p">:</span> <span class="s">&#39;heroes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;potato&#39;</span>    <span class="p">:</span> <span class="s">&#39;potatoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;tomato&#39;</span>    <span class="p">:</span> <span class="s">&#39;tomatoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;torpedo&#39;</span>   <span class="p">:</span> <span class="s">&#39;torpedoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;veto&#39;</span>      <span class="p">:</span> <span class="s">&#39;vetoes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;child&#39;</span>     <span class="p">:</span> <span class="s">&#39;children&#39;</span><span class="p">,</span>
+            <span class="s">&#39;woman&#39;</span>     <span class="p">:</span> <span class="s">&#39;women&#39;</span><span class="p">,</span>
+            <span class="s">&#39;man&#39;</span>       <span class="p">:</span> <span class="s">&#39;men&#39;</span><span class="p">,</span>
+            <span class="s">&#39;person&#39;</span>    <span class="p">:</span> <span class="s">&#39;people&#39;</span><span class="p">,</span>
+            <span class="s">&#39;goose&#39;</span>     <span class="p">:</span> <span class="s">&#39;geese&#39;</span><span class="p">,</span>
+            <span class="s">&#39;mouse&#39;</span>     <span class="p">:</span> <span class="s">&#39;mice&#39;</span><span class="p">,</span>
+            <span class="s">&#39;barracks&#39;</span>  <span class="p">:</span> <span class="s">&#39;barracks&#39;</span><span class="p">,</span>
+            <span class="s">&#39;deer&#39;</span>      <span class="p">:</span> <span class="s">&#39;deer&#39;</span><span class="p">,</span>
+            <span class="s">&#39;nucleus&#39;</span>   <span class="p">:</span> <span class="s">&#39;nuclei&#39;</span><span class="p">,</span>
+            <span class="s">&#39;syllabus&#39;</span>  <span class="p">:</span> <span class="s">&#39;syllabi&#39;</span><span class="p">,</span>
+            <span class="s">&#39;focus&#39;</span>     <span class="p">:</span> <span class="s">&#39;foci&#39;</span><span class="p">,</span>
+            <span class="s">&#39;fungus&#39;</span>    <span class="p">:</span> <span class="s">&#39;fungi&#39;</span><span class="p">,</span>
+            <span class="s">&#39;cactus&#39;</span>    <span class="p">:</span> <span class="s">&#39;cacti&#39;</span><span class="p">,</span>
+            <span class="s">&#39;phenomenon&#39;</span>    <span class="p">:</span> <span class="s">&#39;phenomena&#39;</span><span class="p">,</span>
+            <span class="s">&#39;index&#39;</span>     <span class="p">:</span> <span class="s">&#39;indices&#39;</span><span class="p">,</span>
+            <span class="s">&#39;appendix&#39;</span>  <span class="p">:</span> <span class="s">&#39;appendices&#39;</span><span class="p">,</span>
+            <span class="s">&#39;criterion&#39;</span> <span class="p">:</span> <span class="s">&#39;criteria&#39;</span>
+            <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">aberrant</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">aberrant</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;s&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">vowels</span> <span class="o">=</span> <span class="s">&#39;aeiou&#39;</span>
+            <span class="k">if</span> <span class="n">word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ch&#39;</span><span class="p">,</span> <span class="s">&#39;sh&#39;</span><span class="p">):</span>
+                <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;es&#39;</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;y&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">vowels</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">word</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">uppercase</span><span class="p">):</span>
+                    <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;s&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;ies&#39;</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="s">&#39;is&#39;</span><span class="p">:</span>
+                <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;es&#39;</span>
+                <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">word</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;s&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">):</span>
+                <span class="n">postfix</span> <span class="o">=</span> <span class="s">&#39;es&#39;</span>
+
+        <span class="k">return</span> <span class="s">&#39;{}{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">postfix</span><span class="p">)</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

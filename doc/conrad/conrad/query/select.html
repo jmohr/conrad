@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>select.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>select.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">from</span> <span class="nn">query</span> <span class="kn">import</span> <span class="n">FilterableQuery</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>Implements a SELECT query.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="n">FilterableQuery</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        <p>template = 'SELECT {select} FROM {table} {conditions} {order} {limit}'</p>
+<p>def <strong>init</strong>(self, table=None, fields=()):
+<pre>FilterableQuery.<strong>init</strong>(self, table)
+self.select_fields = fields
+</pre>
+def limit(self, upper, lower=None):
+Limit the results of the query. If only an upper bound is</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="n">specified</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">is</span> <span class="n">assumed</span> <span class="n">to</span> <span class="n">be</span> <span class="mf">0.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        if upper and not lower:</span>
+<span class="s">            self.limit_clause = &#39;LIMIT {}&#39;.format(upper)</span>
+<span class="s">        elif upper and lower:</span>
+<span class="s">            if lower &gt;= upper:</span>
+<span class="s">                raise ValueError(&#39;lower bound must be less than upper bound&#39;)</span>
+<span class="s">            self.limit_clause = &#39;LIMIT {} {}&#39;.format(lower, upper-lower)</span>
+<span class="s">        return self</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def order_by(self, field, direction=&#39;ASC&#39;):</span>
+<span class="s">#DIVIDER</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        <p>Specify result ordering.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        <p>if direction not in ['ASC', 'DESC']:
+<pre>raise ValueError('direction must be ASC or DESC')
+self.order_by_clause = 'ORDER BY {} {}'.format(field, direction)
+return self
+</pre>
+@property
+def statement(self):
+return self.template.format(
+select = ', '.join(self.select_fields) or '*',
+table = self.table,
+conditions = self.where_clause,
+order = self.order_by_clause,
+limit = self.limit_clause,
+).strip()</p>
+<p>@property
+def variables(self):
+return self.conditions.values()</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_conrad.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>test_conrad.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">conrad.test</span> <span class="kn">import</span> <span class="n">resource</span><span class="p">,</span> <span class="n">create_test_database</span>
+<span class="kn">from</span> <span class="nn">conrad</span> <span class="kn">import</span> <span class="n">Database</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestDatabase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_db</span> <span class="o">=</span> <span class="n">create_test_database</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsn</span> <span class="o">=</span> <span class="s">&#39;DRIVER={{SQLite3}};DATABASE={}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_db</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_db</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsn</span><span class="p">)</span>
+        <span class="n">all_artists</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s">&#39;artist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_artists</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="n">my_artist</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s">&#39;artist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Randoman&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">my_artist</span> <span class="ow">in</span> <span class="n">db</span><span class="p">[</span><span class="s">&#39;artist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="n">my_artist</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Genericat&#39;</span>
+        <span class="k">assert</span> <span class="n">my_artist</span><span class="o">.</span><span class="n">save_required</span>
+        <span class="n">my_artist_again</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s">&#39;artist&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">my_artist</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">my_artist_again</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;Randoman&#39;</span>
+        <span class="n">len_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s">&#39;album&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">db</span><span class="p">[</span><span class="s">&#39;album&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&#39;Album {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">artist_id</span><span class="o">=</span><span class="n">my_artist</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+        <span class="n">len_after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s">&#39;album&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="n">len_after</span> <span class="o">-</span> <span class="n">len_before</span> <span class="o">==</span> <span class="mi">10</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>condition.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>condition.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;gt&#39;</span><span class="p">,</span> <span class="s">&#39;lt&#39;</span><span class="p">,</span> <span class="s">&#39;gte&#39;</span><span class="p">,</span> <span class="s">&#39;lte&#39;</span><span class="p">,</span> <span class="s">&#39;Condition&#39;</span><span class="p">]</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        <p>This is a base class to represent a SQL filtering condition. These</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">Condition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        <p>can be used in a Query.filter clause to implement various equality
+statements. For example, take the following query:</p>
+<pre>Select('person').filter(age=30)
+</pre>
+
+<p>This is great and all, but it will only filter on the exact age. A
+mechanism was needed for implementing other checks. Django handles this
+by doing special checks on the **kwargs that get passed into the
+filter, and the user can append text to the variable name to change
+the comparison. For example, instead of doing "age=30", if you wanted
+to do a greater than comparison, you would do "age__gt=30". This is
+fine, but it doesn't allow the end user to easily create their own
+comparison operators. I found this to be a problem for non-standard
+database servers.</p>
+<p>Conrad implements these comparisons as classes. This allows you to
+subclass the "Condition" class to create your own SQL comparison. A
+Condition has a statement, a variable, and an operator. When the Query
+generates its SQL statement, it will insert the "statement" property
+from any Conditions included in the filters. It will then include the
+value of the "variable" property in the arguments to the adapter. By
+default, the "statement" property is  {operator} 
+where operator is just the class' operator property. The name and
+placeholder variables are escaped, and inserted by the Query itself.
+The name is the kwarg that was assigned, and the placeholder is the
+query's placeholder value.</p>
+<p>So, for example, let's use this in a Select:</p>
+<p>Select('person').filter(age=gt(30))</p>
+<p>This filter will return all 'person' rows where <code>age</code> &gt; 30. In the
+above description of the "statement",  is "age" and
+ is probably "?". In the gt() condition class below,
+the operator is defined as "&gt;". So that's how the Select query can
+generate a SQL query of "SELECT * FROM person WHERE age &gt; 30".</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        <p>Override the operator in subclasses for simple condition modification</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;=&#39;</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span>
+
+    <span class="nd">@property</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">statement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        <p>Override this property for more extreme conditions</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>        <span class="k">return</span> <span class="s">&#39;{{name}} {operator} {{placeholder}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">operator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">statement</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">GreaterThan</span><span class="p">(</span><span class="n">Condition</span><span class="p">):</span>
+    <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;&gt;&#39;</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">LessThan</span><span class="p">(</span><span class="n">Condition</span><span class="p">):</span>
+    <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">GreaterThanOrEqualTo</span><span class="p">(</span><span class="n">Condition</span><span class="p">):</span>
+    <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;&gt;=&#39;</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">LessThanOrEqualTo</span><span class="p">(</span><span class="n">Condition</span><span class="p">):</span>
+    <span class="n">operator</span> <span class="o">=</span> <span class="s">&#39;&lt;=&#39;</span>
+
+
+<span class="n">gt</span> <span class="o">=</span> <span class="n">GreaterThan</span>
+<span class="n">lt</span> <span class="o">=</span> <span class="n">LessThan</span>
+<span class="n">gte</span> <span class="o">=</span> <span class="n">GreaterThanOrEqualTo</span>
+<span class="n">lte</span> <span class="o">=</span> <span class="n">LessThanOrEqualTo</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

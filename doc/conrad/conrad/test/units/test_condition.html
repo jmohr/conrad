@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>test_condition.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>test_condition.py</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-0'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-0">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="kn">from</span> <span class="nn">conrad</span> <span class="kn">import</span> <span class="n">query</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-1'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-1">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestCondition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-2'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-2">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">module_attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;gt&#39;</span><span class="p">,</span> <span class="s">&#39;lt&#39;</span><span class="p">,</span> <span class="s">&#39;gte&#39;</span><span class="p">,</span> <span class="s">&#39;lte&#39;</span><span class="p">]:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&#39;condition does not have attr {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_attr</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">module_attr</span><span class="p">),</span> <span class="n">errmsg</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">Condition</span><span class="p">,</span> <span class="s">&#39;statement&#39;</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-3'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-3">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestGreaterThan</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-4'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-4">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">query</span><span class="o">.</span><span class="n">lt</span>
+        <span class="k">print</span> <span class="n">query</span><span class="o">.</span><span class="n">Condition</span>
+        <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">lt</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">Condition</span><span class="p">)</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-5'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-5">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_sqlgen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gt</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">gt</span><span class="o">.</span><span class="n">statement</span> <span class="o">==</span> <span class="s">&#39;{name} &gt; {placeholder}&#39;</span>
+        <span class="k">assert</span> <span class="mi">5</span> <span class="o">==</span> <span class="n">gt</span><span class="o">.</span><span class="n">variable</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-6'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-6">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestLessThan</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-7'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-7">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_sqlgen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lt</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">lt</span><span class="o">.</span><span class="n">statement</span> <span class="o">==</span> <span class="s">&#39;{name} &lt; {placeholder}&#39;</span>
+        <span class="k">assert</span> <span class="mi">5</span> <span class="o">==</span> <span class="n">lt</span><span class="o">.</span><span class="n">variable</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-8'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-8">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestGreaterThanOrEqualTo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-9'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-9">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_sqlgen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gte</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">gte</span><span class="o">.</span><span class="n">statement</span> <span class="o">==</span> <span class="s">&#39;{name} &gt;= {placeholder}&#39;</span>
+        <span class="k">assert</span> <span class="mi">5</span> <span class="o">==</span> <span class="n">gte</span><span class="o">.</span><span class="n">variable</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-10'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-10">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestLessThanOrEqualTo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-11'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-11">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_sqlgen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">lte</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">lte</span><span class="o">.</span><span class="n">statement</span> <span class="o">==</span> <span class="s">&#39;{name} &lt;= {placeholder}&#39;</span>
+        <span class="k">assert</span> <span class="mi">5</span> <span class="o">==</span> <span class="n">lte</span><span class="o">.</span><span class="n">variable</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-12'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-12">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre><span class="k">class</span> <span class="nc">TestConditionFilterIntegration</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-13'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-13">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_filtering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Select</span><span class="p">(</span><span class="s">&#39;test_table&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="n">q</span><span class="o">.</span><span class="n">variables</span> <span class="o">==</span> <span class="p">[</span><span class="mi">25</span><span class="p">],</span> <span class="s">&#39;q.variables is {}, should be [25]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="s">&#39;name &lt;= ?&#39;</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">statement</span></pre></div></pre></div>
+      </td>
+    </tr><tr id='section-14'>
+      <td class=docs>
+        <div class="octowrap">
+          <a class="octothorpe" href="#section-14">#</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_filter_chaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Select</span><span class="p">(</span><span class="s">&#39;test_table&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="s">&#39;foobar&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">age</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="mi">33</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="mi">33</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">variables</span>
+        <span class="k">assert</span> <span class="s">&#39;foobar&#39;</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">variables</span>
+        <span class="k">assert</span> <span class="s">&#39;name &gt; ?&#39;</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">statement</span>
+        <span class="k">assert</span> <span class="s">&#39;age &lt;= ?&#39;</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">statement</span>
+
+</pre></div></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
