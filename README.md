@@ -15,4 +15,4 @@ to easily integrate an ORM solution, Conrad might be just what you need.
 
 ## Getting started
 
-Take a look at the Getting Started page in the Wiki.
+Take a look at the [Getting Started](https://github.com/jmohr/conrad/wiki/Getting-started) page in the Wiki.
