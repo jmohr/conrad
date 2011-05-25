@@ -43,14 +43,21 @@ class Table(object):
         else:
             self.escaped_table = database.adapter.escape(table)
         self.database = database
-        self.rescan()
+        #self.rescan()
+        self._columns = None
+
+    @property
+    def columns(self):
+        if self._columns is None:
+            self.rescan()
+        return self._columns
 
     def rescan(self):
         """
         Rescans the tables column listing. These values are used for
         validation checking.
         """
-        self.columns = self.database.adapter.describe(
+        self._columns = self.database.adapter.describe(
                 self.table, self.catalog, self.schema).keys()
 
     def filter(self, **kwargs):
