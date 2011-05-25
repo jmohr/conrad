@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>base.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>base.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>This is a base DB adapter, for a database which implements the
+Python DBAPI2.0 spec. Much more testing needs to be done with this,
+as it currently has only been tested with the ODBC subclass. In theory,
+though, you should be able to create your own adapter by subclassing
+this, and defining the connect() method for whatever database you
+are trying to connect to. Just have it set self.cursor and
+self.connection, and you should be good to go. You can override
+any of the other methods if your database is non-standard or
+if the module doesn't fully implement DBAPI2.0.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Returns True if the adapter is connected. This is pretty basic,
+though, and should not be trusted too much.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Override this in your subclasses. This should set self.connection
+and self.cursor to be DBAPI2.0 compliant objects, as named.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>This executes the given SQL string, passing in the remaining args.
+If the statement is a SELECT, return the results. If it is an
+INSERT, return the pk of created item. If it is an UPDATE or
+a DELETE, return None.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Takes DBAPI2.0 Row objects, and turns them into a list of dicts
+consisting of column:value pairs.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">to_dicts</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Override this in your subclass if your target database uses some
+other statement to retreive the ID of the last inserted item.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">last_inserted_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Returns a dict with an entry for each table in the connected
+database. The dict has the following schema:</p>
+<pre>table_name:{
+name: the name of the table,
+catalog: the catalog which contains the table,
+schema: the schema which contains the table,
+type: usually TABLE or VIEW,
+remarks: DB dependent
+}
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>The following hacks are due to the fact that pyodbc returns
+None if the DB doesn't have a catalog or schema, but it
+doesn't accept None when calling cursor.columns() or
+cursor.tables(). So, change None to empty string.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">table_schem</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;{}.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">table_schem</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">table_name</span><span class="p">)</span>
+                <span class="n">schema</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">table_schem</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">table_name</span>
+                <span class="n">schema</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">table_cat</span><span class="p">:</span>
+                <span class="n">catalog</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">table_cat</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">catalog</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">tables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span>
+                <span class="s">&#39;catalog&#39;</span><span class="p">:</span> <span class="n">catalog</span><span class="p">,</span>
+                <span class="s">&#39;schema&#39;</span><span class="p">:</span> <span class="n">schema</span><span class="p">,</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">table_type</span><span class="p">,</span>
+                <span class="s">&#39;remarks&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">remarks</span>
+            <span class="p">}</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Raw tables: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tables</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">tables</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p></pre>Returns a description of the requested table. Description is a
+dict, where the keys are the column names:</p>
+<pre>col_name:{
+catalog: catalog containing this table,
+schema: ditto,
+table: name of the table,
+name: the name of the column,
+type: the data type (i.e. VARCHAR, INT),
+size: the size of the type,
+nullable: 1 if null ok,
+remarks: db dependent
+}
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p></pre>Escape the supplied string, in a format supported by this DB.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Returns the name of the primary key field in the given table. If
+multiple PKs are present, returns the first.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">pk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Returns a dict of the foreign keys present in a table:</p>
+<pre>to_table:{
+to: (table, colname),
+from: (table, colname)
+}
+</pre>
+
+<p>For convenience, this also sets a key plural(to_table) to ease
+lookup of pluralized relations in the models.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">fks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

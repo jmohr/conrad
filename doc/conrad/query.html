@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>query.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>query.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Handles generation of various SQL queries, and acts as a repository</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Query</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>for the results. This class is abstract, and should be subclassed."""</p>
+<p><strong>metaclass</strong> = ABCMeta
+placeholder = '?'</p>
+<p>def <strong>init</strong>(self, table):
+<pre>logging.debug('Initializing query for table {}'.format(table))
+self.updates = {}
+self.limit_clause = ''
+self.order_by_clause = ''
+self.table = table
+self._cache = None
+</pre>
+def <strong>repr</strong>(self):
+Returns the cache's <strong>repr</strong>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Returns the length of the cache.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>return len(self.cache)</p>
+<p>@abstractproperty
+def statement(self):
+Override this with the code that will generate the SQL statement.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span>
+
+    <span class="nd">@abstractproperty</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Override this with the code that will return the variables, to</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>be passed to the cursor's execute() method along with the
+statement."""
+return</p>
+<p>@abstractproperty
+def template(self):
+This string contains the SQL query template.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Gets the specified item from the cache. You can specify slices</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>to get chunks of data."""
+try:
+<pre>return self.cache[key]
+except IndexError, e:
+raise IndexError('The query returned {} results, key [{}] is out of range'.format(
+len(self.cache), key))
+</pre>
+@property
+def cache(self):
+Keeps an in-memory cache of the results of the query, as executed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">on</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        if self._cache is None:</span>
+<span class="s">            self._cache = list(self.__iter__())</span>
+<span class="s">        return self._cache</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def __iter__(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        returns the results of said query.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Allows you to iterate through results, without incurring overhead</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">FilterableQuery</span><span class="p">(</span><span class="n">Query</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>of putting everything in memory. Yay generators!"""
+for row in self.execute():
+<pre>resource = self.table(**row)
+resource.new = False
+yield resource
+</pre>
+def execute(self):
+Executes this query on self.table.database.adapter, and</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">method</span> <span class="n">can</span> <span class="n">be</span> <span class="n">chained</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        logger.debug(&#39;Filtering on &quot;{}&quot;&#39;.format(kwargs))</span>
+<span class="s">        for key, value in kwargs.items():</span>
+<span class="s">            if issubclass(type(value), Condition):</span>
+<span class="s">                logger.debug(&#39;Filter statement is Condition&#39;)</span>
+<span class="s">                sql = value.statement.format(name=key,</span>
+<span class="s">                        placeholder=self.placeholder)</span>
+<span class="s">                self.conditions[sql] = value.variable</span>
+<span class="s">                logger.debug(&#39;Adding filter SQL: {}&#39;.format(sql))</span>
+<span class="s">                logger.debug(&#39;Adding filter variable: {}&#39;.format(value.variable))</span>
+<span class="s">            else:</span>
+<span class="s">                logger.debug(&#39;Filter is not Condition, using raw value: {}&#39;.format(value))</span>
+<span class="s">                logger.debug(&#39;Filter value is of type {}&#39;.format(type(value)))</span>
+<span class="s">                self.conditions[&#39;{} = {}&#39;.format(key, self.placeholder)] = value</span>
+<span class="s">        logger.debug(&quot;After adding filter, conditions: {}&quot;.format(self.conditions))</span>
+<span class="s">        return self</span>
+
+<span class="s">    @property</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def where_clause(self):</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>This is a query which allows you to filter your set of results. In</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>SQL terms, this is any query where you can do a WHERE clause, such
+as SELECTs or UPDATEs."""</p>
+<p>def <strong>init</strong>(self, <em>args, <strong>kwargs):
+<pre>Query.<em><em>init</em></em>(self, *args, </strong>kwargs)
+self.conditions = {}
+</pre>
+def filter(self, </em>*kwargs):
+Supply one or more keyword arguments to use as filters. This</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Returns a string representing the WHERE clause of the SQL</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
