@@ -71,7 +71,10 @@ class Table(object):
         """
         Gets a specific entry in the table by primary key.
         """
-        return Select(self).filter(**{self.pk_field:pk})[0]
+        try:
+            return Select(self).filter(**{self.pk_field:pk})[0]
+        except IndexError:
+            return None
 
     def new(self, **kwargs):
         """
