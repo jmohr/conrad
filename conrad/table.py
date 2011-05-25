@@ -1,5 +1,10 @@
+import logging
+
 from conrad.query import Select
 from conrad.resource import Resource
+
+
+logger = logging.getLogger(__name__)
 
 
 class Table(object):
@@ -26,21 +31,27 @@ class Table(object):
     Resource. Think of a Table as a way of finding and managing Resources.
     """
 
-    def __init__(self, database, table):
+    def __init__(self, database, table, catalog='', schema=''):
+        logger.debug('Defining table {} with catalog {} and schema {}'.format(
+                table, catalog, schema))
         self.table = table
-        self.escaped_table = database.adapter.escape(table)
+        self.catalog = catalog
+        self.schema = schema
+        if schema:
+            self.escaped_table = database.adapter.escape(
+                    '.'.join((schema,table)))
+        else:
+            self.escaped_table = database.adapter.escape(table)
         self.database = database
         self.rescan()
-
-    def keys(self):
-        return self.columns.keys()
 
     def rescan(self):
         """
         Rescans the tables column listing. These values are used for
         validation checking.
         """
-        self.columns = [c for c in self.database.adapter.describe(self.table)]
+        self.columns = self.database.adapter.describe(
+                self.table, self.catalog, self.schema).keys()
 
     def filter(self, **kwargs):
         """

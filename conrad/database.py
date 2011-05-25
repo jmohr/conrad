@@ -21,11 +21,11 @@ class Database(DictMixin):
         [{'artist_id':1, 'id':1, ...}]
     """
 
-    def __init__(self, dsn='', adapter=default):
+    def __init__(self, dsn='', adapter=default, **kwargs):
         self.adapter = default
         self.dsn = dsn
         if not self.adapter.connected:
-            self.adapter.connect(dsn)
+            self.adapter.connect(dsn, **kwargs)
         self.rescan()
 
     def __repr__(self):
@@ -43,7 +43,8 @@ class Database(DictMixin):
         """
         self.tables = {}
         for name, info in self.adapter.tables.items():
-            self.tables[name] = Table(self, info['name'])
+            self.tables[name] = Table(self, info['name'], info['catalog'],
+                                                info['schema'])
 
     def close(self):
         return

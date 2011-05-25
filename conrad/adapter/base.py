@@ -1,4 +1,5 @@
 import logging
+import pyodbc
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 from conrad.utils import plural
@@ -109,17 +110,31 @@ class Base(object):
         logger.debug('Returning table listing for {}'.format(self.connection))
         tables = {}
         for row in self.cursor.tables():
-            tables[row.table_name] = {
+            # The following hacks are due to the fact that pyodbc returns
+            # None if the DB doesn't have a catalog or schema, but it
+            # doesn't accept None when calling cursor.columns() or
+            # cursor.tables(). So, change None to empty string.
+            if row.table_schem:
+                name = '{}.{}'.format(row.table_schem, row.table_name)
+                schema = row.table_schem
+            else:
+                name = row.table_name
+                schema = ''
+            if row.table_cat:
+                catalog = row.table_cat
+            else:
+                catalog = ''
+            tables[name] = {
                 'name': row.table_name,
-                'catalog': row.table_cat,
-                'schema': row.table_schem,
+                'catalog': catalog,
+                'schema': schema,
                 'type': row.table_type,
                 'remarks': row.remarks
             }
         logger.debug('Raw tables: {}'.format(tables))
         return tables
 
-    def describe(self, table):
+    def describe(self, table, catalog='', schema=''):
         """
         Returns a description of the requested table. Description is a
         dict, where the keys are the column names:
@@ -137,17 +152,28 @@ class Base(object):
         """
         logger.debug('Describing table: {}'.format(table))
         columns = {}
-        for row in self.cursor.columns(table):
-            columns[row.column_name] = {
-                'name': row.column_name,
-                'catalog': row.table_cat,
-                'schema': row.table_schem,
-                'table': row.table_name,
-                'type': row.type_name,
-                'size': row.column_size,
-                'nullable': row.nullable,
-                'remarks': row.remarks,
-            }
+        try:
+            for row in self.cursor.columns(table, catalog, schema):
+                if row.table_schem:
+                    table_schema = row.table_schem
+                else:
+                    table_schema = ''
+                if row.table_cat:
+                    table_catalog = row.table_cat
+                else:
+                    table_catalog = ''
+                columns[row.column_name] = {
+                    'name': row.column_name,
+                    'catalog': table_catalog,
+                    'schema': table_schema,
+                    'table': row.table_name,
+                    'type': row.type_name,
+                    'size': row.column_size,
+                    'nullable': row.nullable,
+                    'remarks': row.remarks,
+                    }
+        except pyodbc.Error, e:
+            logger.error('Error describing table {}: {}'.format(table, e))
         logger.debug('Raw columns: {}'.format(columns))
         return columns
 
