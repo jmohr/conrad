@@ -7,7 +7,7 @@ setup(
     author = 'Justin Mohr',
     author_email = 'jmohr@bytepulse.net',
     packages = find_packages(exclude=['*.test.*', '*.test']),
-    version = '1.0.1',
+    version = '1.0.2',
     install_requires = ['pyodbc'],
     license = 'BSD',
     url = 'http://github.com/jmohr/conrad',
