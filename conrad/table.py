@@ -45,12 +45,22 @@ class Table(object):
         self.database = database
         #self.rescan()
         self._columns = None
+        self._schema_dict = {}
 
     @property
     def columns(self):
         if self._columns is None:
             self.rescan()
         return self._columns
+
+    @property
+    def schema_dict(self):
+        if self._schema_dict:
+            return self._schema_dict
+        for col, info in self.database.adapter.describe(
+                self.table, self.catalog, self.schema).items():
+            self._schema_dict[col] = info['type']
+        return self._schema_dict
 
     def rescan(self):
         """
