@@ -1,7 +1,10 @@
+import logging
 from UserDict import DictMixin
 
 from adapter import default
 from table import Table
+
+logger = logging.getLogger(__name__)
 
 
 class Database(DictMixin):
@@ -22,9 +25,11 @@ class Database(DictMixin):
     """
 
     def __init__(self, dsn='', adapter=default, **kwargs):
+        logger.debug('Using adapter {} for database.'.format(adapter))
         self.adapter = default
         self.dsn = dsn
         if not self.adapter.connected:
+            logger.debug('Database is calling connect for {} ({})'.format(dsn, kwargs))
             self.adapter.connect(dsn, **kwargs)
         self.rescan()
 
