@@ -3,9 +3,9 @@ import pyodbc
 
 logger = logging.getLogger(__name__)
 
-from base import Base
+from dbapi2 import DBAPI2
 
-class ODBC(Base):
+class ODBC(DBAPI2):
     """
     This is a generic PyODBC based adapter.
     """
@@ -14,6 +14,4 @@ class ODBC(Base):
         logger.info('Connecting to ODBC connection at {}'.format(dsn))
         self.dsn = dsn
         self.connection = pyodbc.connect(dsn, **kwargs)
-        self.cursor = self.connection.cursor()
-
 

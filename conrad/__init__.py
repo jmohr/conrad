@@ -8,4 +8,4 @@ __version_str__ = '.'.join(map(str, __version__))
 
 import query
 import adapter
-from database import Database
+#from database import Database
