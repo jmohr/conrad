@@ -60,7 +60,13 @@ class Base(object):
         """
         logger.info('Executing SQL query "{}" with args "{}"'.format(
                 sql, args))
-        self.cursor.execute(sql, *args)
+        try:
+            self.cursor.execute(sql, *args)
+        except pyodbc.ProgrammingError, e:
+            logger.warn('Cursor error, reopening connection: {}'.format(e))
+            self.cursor.close()
+            self.cursor = self.connection.cursor()
+            self.cursor.execute(sql, *args)
         self.connection.commit()
         if sql.startswith('SELECT'):
             logger.debug('Query starts with SELECT, returning list.')
