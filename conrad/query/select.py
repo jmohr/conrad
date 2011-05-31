@@ -10,6 +10,13 @@ class Select(FilterableQuery):
         FilterableQuery.__init__(self, table)
         self.select_fields = fields
 
+    def select(self, *fields):
+        if '*' in fields:
+            self.select_fields = ()
+        else:
+            self.select_fields = fields
+        return self
+
     def limit(self, upper, lower=None):
         """Limit the results of the query. If only an upper bound is
         specified, lower is assumed to be 0."""
