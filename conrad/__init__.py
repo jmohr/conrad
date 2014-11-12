@@ -3,9 +3,9 @@ Conrad is a simple, magic-free ORM for Python.
 See http://github.com/jmohr/conrad for details.
 """
 
-__version__ = (1, 0, 3)
-__version_str__ = '.'.join(map(str, __version__))
+__version__ = (2, 0, 0, 'dev', 1)
+__author__ = "Justin Mohr <jmohr@bytepulse.net>"
 
-import query
-import adapter
-#from database import Database
+from database import Database
+from query import *
+from adapter import *

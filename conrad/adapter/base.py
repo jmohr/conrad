@@ -1,8 +1,5 @@
 import logging
-import pyodbc
-from abc import ABCMeta, abstractmethod, abstractproperty
-
-from conrad.utils import plural
+from abc import ABCMeta, abstractmethod
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +21,7 @@ class Base(object):
 
     def __init__(self, *args, **kwargs):
         logger.debug('Initializing Base DB adapter')
+        self.connection = None
         if not (args or kwargs):
             logger.debug('No args or kwargs defined')
         else:
@@ -36,19 +34,19 @@ class Base(object):
         return
 
     @abstractmethod
-    def find(self, resource, conditions={}):
+    def find(self, resource, conditions=None):
         return
 
     @abstractmethod
-    def create(self, resource, attributes={}):
+    def create(self, resource, attributes=None):
         return
 
     @abstractmethod
-    def update(self, resource, attributes={}, conditions={}):
+    def update(self, resource, attributes=None, conditions=None):
         return
 
     @abstractmethod
-    def delete(self, resource, conditions={}):
+    def delete(self, resource, conditions=None):
         return
 
     @classmethod

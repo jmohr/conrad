@@ -45,8 +45,7 @@ class DBAPI2(Base):
             cursor.close()
         return result
 
-    def find(self, resource, conditions={}, columns=[],
-                order_by=None, limit=None):
+    def find(self, resource, conditions=None, columns=None, order_by=None, limit=None):
         table = self.escape(resource)
         if not columns:
             columns = '*'
